@@ -156,7 +156,7 @@ def doListScan(inputList):
           if not a:
              print(Host.Adress+" not responding, offline")
        else:
-          if Host.ComputerName.find(Host.Adress)>-1:
+           if Host.ComputerName.find(Host.Adress)>-1:
               print(Host.Adress+" responds in "+str(Host.Status)+"ms")
           else:
               print(Host.Adress+" "+Host.ComputerName+" responds in "+str(Host.Status)+"ms")

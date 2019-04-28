@@ -1,17 +1,19 @@
-windows\scan-network is a simple IP range scanner in Windows 10.
+scan-network is a simple IP range scanner.
 
 Whats new?
-In 2.4 version it can run in Windows 10. You need run command prompt as
-administrator. Then try it.
+In 2.0 version there is no required root privigiles in Linux.
+There is still avaible 1.0 version for windows whih is using sockets.
 
-Version 2.4:
-    + Add a option for listing all alive ip address.
-    * Modify code for running on Windows 10.
-    * Modify code using Python 3.
-    + Find a computer name.
+Version 2.1:
++ Added option to scan from file and STDIN
++ Supports python threads (+ to speed)
 
-vereperrot@desktop>python scan-network.py --help
-scan-network v.2.4 for Windows 10. A simple local network scanner.
+
+Notice for 1.0 version: Root privigiles are needed to run scanner (for IMCP echo ping), im working on scanner which will not need root 
+privigiles
+
+webnull@webnull-gentoo-desktop ~/Praca/python/scan-network $ ./scan-network.py --help
+scan-network v.2.1 for GNU/Linux. A simple local network scanner.
 Usage: scan-network [long GNU option] [option] from [option] to
 
  --from (-f) range of ip adresses to start, default is 1
@@ -20,28 +22,21 @@ Usage: scan-network [long GNU option] [option] from [option] to
  --delay (-d) delay between pings, default is 0 second
  --load-file (-l) scan ip adresses listed in file
  --stdin (-s) grab list of ip adresses from stdin
- --alive (-a) show alive ip adresses only
  --help this screen
 
 Example of usage:
- scan-network -i 192.168.1.* # scan range from 192.168.1.1 to 192.168.1.254
  scan-network -f 100 -t 254 -i 192.168.1.* # scan range from 192.168.1.100 to 192.168.1.254
  scan-network.py -l examples/example-ip-list # scan ip adresses from file
- cat example-ip-list
- ~
- 192.168.100.1
- 192.168.100.2
- ~
  cat examples/example-ip-list | scan-network -s # scan from stdin
  echo "192.168.1.100,192.168.1.101,192.168.1.102,192.168.1.103,192.168.1.104,192.168.1.107,192.168.1.108" | scan-network -s # scan from stdin
 
-vereperrot@desktop>python scan-network.py --from=100 --to=110 --ip 192.168.1
+webnull-gentoo-desktop scan-network # ./scan-network.py --from=100 --to=110 --ip 192.168.1
 Adresses to scan: 10
 Ping 192.168.1.{100 to 110}
 Delay: 1
-192.168.1.100 DESKTOP2 responds in 0.0013279914856
+192.168.1.100 responds in 0.0013279914856
 192.168.1.101 not responding, offline
-192.168.1.102 DESKTOP1 responds in 0.000174999237061
+192.168.1.102 responds in 0.000174999237061
 192.168.1.103 not responding, offline
 192.168.1.104 not responding, offline
 192.168.1.105 not responding, offline
@@ -52,8 +47,13 @@ Delay: 1
 192.168.1.110 not responding, offline
 
 Changelog:
-4.27.2019 (v.2.4) <vereperrot@gmail.com>:
-    + Add a option for listing all alive ip address.
-    * Modify code for running on Windows 10.
-    * Modify code using Python 3.
-    + Find a computer name.
+14.08.2011 (v.2.3) <webnull.www@gmail.com>:
+    * Moved from os.popen4 to subprocess.getoutput
+    + Added support for Python 3
+    + Handling exceptions from threads to notify user that he have not sufficient permissions
+
+30.07.2011 (v.2.2):
+    * Changed Python version from python2.7 to python
+
+29.07.2011 (v.2.1):
+    + Added changelog and versioning informations
