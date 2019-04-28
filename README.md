@@ -1,6 +1,6 @@
 windows\scan-network is a simple IP range scanner in Windows 10.
 
-Whats new?
+# Whats new?
 In 2.4 version it can run in Windows 10. You need run command prompt as
 administrator. Then try it.
 
