@@ -76,8 +76,8 @@ Delay: 1
 ## Authors
 * [webnull](https://github.com/webnull) - Initial work
 * [vereperrot](https://github.com/vereperrot) - scan-network for Windows 10. 
-    * [Vere Perrot Blog](http://vereperrot.github.io/)
-    * Do you like my work? [Please have a cup of coffee!](https://www.paypal.me/vereperrot/4USD)
+    * [Vere Perrot Blog](http://vereperrot.github.io/):rocket:
+    * Do you like my work? [Please have a cup of coffee!](https://www.paypal.me/vereperrot/4USD):coffee:
 
 
 
