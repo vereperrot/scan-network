@@ -1,9 +1,8 @@
-#!/usr/bin/python
-
-import sys,os,getopt,time, select, subprocess
+import sys,os,getopt,time, select, subprocess,re
 from threading import Thread
 from IPy import IP
 
+OS="Windows 10"
 version="2.4"
 version_full="scan-network v."+version
 Action="range_scan" # Default action
@@ -18,7 +17,7 @@ ip="192.168.1.*"
 def usage():
         'Shows program usage and version, lists all options'
 
-        print(version_full+" for Windows 10. A simple local network scanner.")
+        print(version_full+" for "+OS+". A simple local network scanner.")
         print("Usage: scan-network [long GNU option] [option] from [option] to")
         print("")
         print(" --from (-f) range of ip adresses to start, default is 1")
@@ -36,7 +35,7 @@ class PingThread(Thread):
 
         # variables
         self.Adress = Adress
-        self.Status = -1
+        self.Status = ''
         self.ComputerName=""
 
     def run(self):
@@ -46,24 +45,18 @@ class PingThread(Thread):
             print("Cannot execute ping, propably you dont have enough permissions to create process")
             sys.exit(1)
 
-        Lines = get.split("\n")
         ResponseTime = False
 
-        for line in Lines:
-            if line.find("Pinging")>-1:
-                ComputerName=line.replace("Pinging ","")
-                ComputerName=ComputerName[0:ComputerName.find("[")]
-                self.ComputerName=ComputerName
-            # find line where is timing given
-            elif line.find("Reply") > -1:
-                Exp = line.split('=')
-                # if response is valid
-                if len(Exp) == 4:
-                    self.Status = Exp[2].replace('ms TTL', '')
-                elif len(Exp) == 3:
-                    tmp=Exp[1][Exp[1].find(" ")+1:].replace("time","")
-                    tmp=tmp[0:tmp.find(" ")].replace("ms","")
-                    self.Status = tmp
+        tmp=re.search('(?<=Pinging) (.*) \[', get)
+        ComputerName='' if tmp is None else tmp.group(1)
+        self.ComputerName=ComputerName
+
+        tmp=re.search('time(.*) ', get)
+        Status='' if tmp is None else tmp.group(1) 
+        Status=Status[Status.find('=')+1:]
+        #timed out
+        Status='' if Status =='d' else Status
+        self.Status = Status
 def main():
         'Main function'
         global Action, x, y, ping_delay, ip,a
@@ -112,7 +105,7 @@ def main():
                         Action="stdin_scan"
 
         if len(opts) == 0:
-            print("scan-network for GNU/Linux,  See --help for usage")
+            print("scan-network for "+OS+",  See --help for usage")
             sys.exit()
 
         if Action == "range_scan":
@@ -152,14 +145,14 @@ def doListScan(inputList):
 
     for Host in ListOfHosts:
        Host.join()
-       if Host.Status == -1:
+       if Host.Status == '':
           if not a:
              print(Host.Adress+" not responding, offline")
        else:
-           if Host.ComputerName.find(Host.Adress)>-1:
-              print(Host.Adress+" responds in "+str(Host.Status)+"ms")
+          if Host.ComputerName.find(Host.Adress)>-1:
+              print(Host.Adress+" responds in "+str(Host.Status))
           else:
-              print(Host.Adress+" "+Host.ComputerName+" responds in "+str(Host.Status)+"ms")
+              print(Host.Adress+" "+Host.ComputerName+" responds in "+str(Host.Status))
 
        time.sleep(ping_delay)
 
@@ -188,14 +181,14 @@ def doRangeScan():
 
                 for Host in ListOfHosts:
                     Host.join()
-                    if Host.Status == -1:
+                    if Host.Status == '':
                         if not a:
                             print(Host.Adress+" not responding, offline")
                     else:
                         if Host.ComputerName.find(Host.Adress)>-1:
-                            print(Host.Adress+" responds in "+str(Host.Status)+"ms")
+                            print(Host.Adress+" responds in "+str(Host.Status))
                         else:
-                            print(Host.Adress+" "+Host.ComputerName+" responds in "+str(Host.Status)+"ms")
+                            print(Host.Adress+" "+Host.ComputerName+" responds in "+str(Host.Status))
 
                     time.sleep(ping_delay)
             else:

@@ -1,5 +1,1 @@
-Version 2.4:
-    + Add a option for listing all alive ip address.
-    * Modify code for running on Windows 10.
-    * Modify code using Python 3.
-    + Find a computer name.
+* Use regular expression to filter result.
