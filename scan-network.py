@@ -1,4 +1,4 @@
-import sys,os,getopt,time, select, subprocess,re
+import sys,os,getopt,time, select, subprocess,re,socket
 from threading import Thread
 from IPy import IP
 
@@ -6,7 +6,8 @@ OS="Windows 10"
 version="2.4"
 version_full="scan-network v."+version
 Action="range_scan" # Default action
-a=False
+showAliveIP=False
+scanPort=False
 x=1
 y=254
 ping_delay=0 # in seconds
@@ -27,6 +28,7 @@ def usage():
         print(" --load-file (-l) scan ip adresses listed in file")
         print(" --stdin (-s) grab list of ip adresses from stdin")
         print(" --alive (-a) show alive ip adresses only")
+        print(" --port (-p) scan port")
         print(" --help this screen")
 
 class PingThread(Thread):
@@ -57,24 +59,26 @@ class PingThread(Thread):
         #timed out
         Status='' if Status =='d' else Status
         self.Status = Status
+
 def main():
         'Main function'
-        global Action, x, y, ping_delay, ip,a
+        global Action, x, y, ping_delay, ip,showAliveIP,scanPort
 
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "sl:d:i:f:t:h:a", ["from=", "to=", "help","alive", "delay=", "ip=", "stdin", "load-file="]) # output=
+            opts, args = getopt.getopt(sys.argv[1:], "sl:d:i:f:t:hap", ["from=", "to=","port", "help","alive", "delay=", "ip=", "stdin", "load-file="]) # output=
 
         except getopt.GetoptError as err:
                 print("Error: "+str(err)+", Try --help for usage\n\n")
                 # usage()
                 sys.exit(2)
-
         for o, a in opts:
                 if o in ("-h", "--help"):
                         usage()
                         sys.exit()
                 if o in ("-a", "--alive"):
-                        a=True
+                        showAliveIP=True
+                if o in ("-p", "--port"):
+                        scanPort=True
                 if o in ("-f", "--from"):
                         try:
                                 x=float(a)
@@ -126,7 +130,7 @@ def main():
                 print("STDIN is empty")
 
 def doListScan(inputList):
-    global a
+    global showAliveIP,scanPort
     ListOfHosts = list()
     Lines = inputList.split("\n")
 
@@ -146,18 +150,37 @@ def doListScan(inputList):
     for Host in ListOfHosts:
        Host.join()
        if Host.Status == '':
-          if not a:
+          if not showAliveIP:
              print(Host.Adress+" not responding, offline")
        else:
           if Host.ComputerName.find(Host.Adress)>-1:
               print(Host.Adress+" responds in "+str(Host.Status))
           else:
               print(Host.Adress+" "+Host.ComputerName+" responds in "+str(Host.Status))
+          if scanPort:
+              r = 1 
+              for x in range(1,100): 
+                  t = Thread(target=portscan,kwargs={'port':r,'address':Host.Adress}) 
+                  r += 1     
+                  t.start() 
 
        time.sleep(ping_delay)
 
+def portscan(address,port):
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(0.5)# 
+
+    try:
+        con = s.connect((address,port))
+
+        print('Port :',port,"is open.")
+
+        con.close()
+    except: 
+        pass
 def doRangeScan():
-        global x, y, ping_delay, ip,a
+        global x, y, ping_delay, ip,showAliveIP,scanPort
         i=int(x)
         to=int(y)
         ListOfHosts = list()
@@ -178,11 +201,13 @@ def doRangeScan():
                 print("Adresses to scan: %1.0f" % (y-x))
                 print("Ping "+ip.replace('*', "{"+str(int(x))+"-"+str(int(y))+"}"))
                 print("Delay: "+str(ping_delay)+"s")
+                #print("showAliveIP:"+str(showAliveIP));
+                #print("scanPort:"+str(scanPort));
 
                 for Host in ListOfHosts:
                     Host.join()
                     if Host.Status == '':
-                        if not a:
+                        if not showAliveIP:
                             print(Host.Adress+" not responding, offline")
                     else:
                         if Host.ComputerName.find(Host.Adress)>-1:
@@ -190,6 +215,12 @@ def doRangeScan():
                         else:
                             print(Host.Adress+" "+Host.ComputerName+" responds in "+str(Host.Status))
 
+                        if scanPort:
+                            r = 1 
+                            for x in range(1,100): 
+                                t = Thread(target=portscan,kwargs={'port':r,'address':Host.Adress}) 
+                                r += 1     
+                                t.start() 
                     time.sleep(ping_delay)
             else:
                 print ("No ip range to scan, please select valid one with --from, --to and --ip")

@@ -1,1 +1,1 @@
-* Use regular expression to filter result.
+* Add scan port option.

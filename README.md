@@ -1,5 +1,5 @@
 # scan-network for Windows 10
-scan-network is a simple IP range scanner in Windows 10.
+scan-network is a simple IP range and port scanner in Windows 10.
 
 ## Getting Started
 The program can run in Windows 10. 
@@ -25,6 +25,7 @@ Usage: scan-network [long GNU option] [option] from [option] to
  --load-file (-l) scan ip adresses listed in file
  --stdin (-s) grab list of ip adresses from stdin
  --alive (-a) show alive ip adresses only
+ --port (-p) scan port
  --help this screen
  ```
  
@@ -57,6 +58,9 @@ Delay: 1
  ~
 ```
 
+### Scan port
+>python scan-network.py --from=100 --to=110 --ip 192.168.1.* -p
+
 ### Scan from stdin
 ```
  cat examples/example-ip-list | scan-network -s # scan from stdin
@@ -74,6 +78,7 @@ Delay: 1
     * [*] Modify code using Python 3.
     * [+] Find a computer name.
     * [*] Use regular expression to filter result.
+    * [+] Add port scan option.
 
 ## Authors
 * [webnull](https://github.com/webnull) - Initial work
