@@ -1,1 +1,2 @@
-* Add scan port option.
+* [*] scan port range 0~65535.
+* [+] show port description.

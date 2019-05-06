@@ -12,6 +12,20 @@ x=1
 y=254
 ping_delay=0 # in seconds
 ip="192.168.1.*"
+portDesc={}
+
+def readWellPort():
+    f = open("well-known-port.txt", encoding="utf8")
+    for x in f:
+        tmp=x.split("\t")
+        if len(tmp)==1: 
+            continue
+        if tmp[-1]=="Official\n" or tmp[-1]=="Unofficial\n":
+            portDesc[tmp[0]]=tmp[-2]
+        else:
+            portDesc[tmp[0]]=tmp[-1]
+    f.close()
+readWellPort()
 
 ' Copyleft by WebNuLL no any right reserved ;-)'
 
@@ -158,8 +172,8 @@ def doListScan(inputList):
           else:
               print(Host.Adress+" "+Host.ComputerName+" responds in "+str(Host.Status))
           if scanPort:
-              r = 1 
-              for x in range(1,100): 
+              r = 0 
+              for x in range(1,65536): 
                   t = Thread(target=portscan,kwargs={'port':r,'address':Host.Adress}) 
                   r += 1     
                   t.start() 
@@ -167,14 +181,21 @@ def doListScan(inputList):
        time.sleep(ping_delay)
 
 def portscan(address,port):
-
+    global portDesc
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.settimeout(0.5)# 
 
     try:
         con = s.connect((address,port))
-
-        print('Port :',port,"is open.")
+        desc=""
+        if str(port) in portDesc:
+            desc="\t"+portDesc[str(port)]
+        else:
+            for k, v in portDesc.items():
+                if k.find(str(port))>-1:
+                    desc="\t"+v
+                    break
+        print('\tPort :',port,"is open. "+desc)
 
         con.close()
     except: 

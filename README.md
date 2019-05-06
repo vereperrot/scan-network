@@ -79,6 +79,8 @@ Delay: 1
     * [+] Find a computer name.
     * [*] Use regular expression to filter result.
     * [+] Add port scan option.
+    * [*] scan port range 0~65535.
+    * [+] show port description.
 
 ## Authors
 * [webnull](https://github.com/webnull) - Initial work
