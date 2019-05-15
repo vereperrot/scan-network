@@ -1,1 +1,1 @@
-* Modify readme
+[+] Creae an executable file in dist folder.

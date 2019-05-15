@@ -85,6 +85,7 @@ Delay: 1
     * [+] Add port scan option.
     * [*] scan port range 0~65535.
     * [+] show port description.
+    * [+] Creae an executable file in dist folder.
 
 ## Authors
 * [webnull](https://github.com/webnull) - Initial work
