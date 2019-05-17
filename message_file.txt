@@ -1,1 +1,1 @@
-[+] Creae an executable file in dist folder.
+[*] Fixed file 'well-known-port.txt' not found.

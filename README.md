@@ -86,6 +86,7 @@ Delay: 1
     * [*] scan port range 0~65535.
     * [+] show port description.
     * [+] Creae an executable file in dist folder.
+    * [*] Fixed file 'well-known-port.txt' not found.
 
 ## Authors
 * [webnull](https://github.com/webnull) - Initial work

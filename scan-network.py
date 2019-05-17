@@ -15,7 +15,7 @@ ip="192.168.1.*"
 portDesc={}
 
 def readWellPort():
-    f = open("well-known-port.txt", encoding="utf8")
+    f = open(os.path.dirname(sys.argv[0])+"\\well-known-port.txt", encoding="utf8")
     for x in f:
         tmp=x.split("\t")
         if len(tmp)==1: 

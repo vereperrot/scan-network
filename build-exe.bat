@@ -1,0 +1,1 @@
+pyinstaller -F .\scan-network.py -i search.ico -c --onedir --onefile --clean --noupx
